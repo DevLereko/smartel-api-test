@@ -18,7 +18,7 @@ router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
 
 /** RULES OF API */
-router.use((req: any, res: any, next: NextFunction) => {
+router.use((req: Request, res: Response, next: NextFunction) => {
   // set the CORS policy
   res.header("Access-Control-Allow-Origin", "*");
   // set the CORS headers
@@ -29,7 +29,8 @@ router.use((req: any, res: any, next: NextFunction) => {
   // set the CORS method headers
   if (req.method === "OPTIONS") {
     res.header("Access-Control-Allow-Methods", "GET PATCH DELETE POST");
-    return res.status(StatusCodes.OK).json({});
+    res.status(StatusCodes.OK).json({});
+    return;
   }
   next();
 });
@@ -38,9 +39,9 @@ router.use((req: any, res: any, next: NextFunction) => {
 router.use("/", routes);
 
 /** Error handling */
-router.use((req: any, res: any) => {
+router.use((res: Response) => {
   const error = new Error("Requested resource is not found");
-  return res.status(StatusCodes.NOT_FOUND).json({
+  res.status(StatusCodes.NOT_FOUND).json({
     message: error.message,
   });
 });
