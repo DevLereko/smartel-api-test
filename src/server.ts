@@ -38,17 +38,24 @@ router.use((req: Request, res: Response, next: NextFunction) => {
 /** Routes */
 router.use("/", routes);
 
-/** Error handling */
-router.use((res: Response) => {
-  const error = new Error("Requested resource is not found");
+/** 404 Catch-All Middleware */
+router.use((req: Request, res: Response) => {
   res.status(StatusCodes.NOT_FOUND).json({
-    message: error.message,
+    message: "Requested resource is not found",
+  });
+});
+
+/** Error Handler Middleware */
+router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error("Unhandled Error:", err);
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    message: err.message || "Internal Server Error",
   });
 });
 
 /** Server */
 db.sequelize.sync().then(async () => {
-  await db.initializeRoles(); // Default role seeding
+  await db.initializeRoles();
 
   const httpServer = http.createServer(router);
   const PORT: any = process.env.PORT ?? 4000;
