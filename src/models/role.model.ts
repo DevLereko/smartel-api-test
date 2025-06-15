@@ -5,6 +5,7 @@ module.exports = (
       arg1: {
         id: { type: number; primaryKey: boolean };
         name: { type: string };
+        description?: { type: string };
       }
     ) => any;
   },
@@ -16,6 +17,9 @@ module.exports = (
       primaryKey: true,
     },
     name: {
+      type: Sequelize.STRING,
+    },
+    description: {
       type: Sequelize.STRING,
     },
   });
