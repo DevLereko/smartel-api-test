@@ -62,10 +62,23 @@ export const deleteTask = async (id: number) => {
   return { message: "Task deleted successfully" };
 };
 
+const reAssignTask = async (taskId: number, newUserId: number) => {
+  const task = await getTaskById(taskId);
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  task.assigned_to = newUserId;
+  await task.save();
+
+  return task;
+};
+
 export default {
   getAllTasks,
   getTaskById,
   createTask,
   updateTask,
   deleteTask,
+  reAssignTask,
 };

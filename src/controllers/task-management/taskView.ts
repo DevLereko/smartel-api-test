@@ -91,6 +91,25 @@ export const deleteTaskHandler = async (req: Request, res: Response) => {
   }
 };
 
+const reAssignTask = async (req: Request, res: Response) => {
+  try {
+    const taskId = Number(req.params.id);
+    const { newUserId } = req.body;
+
+    if (!newUserId) {
+      throw new ValidationError("New user ID is required for reassignment");
+    }
+
+    const task = await taskController.reAssignTask(taskId, newUserId);
+    res.status(StatusCodes.OK).json({
+      message: "Task reassigned successfully",
+      task,
+    });
+  } catch (err: unknown) {
+    handleError(res, err);
+  }
+};
+
 function handleError(res: Response, err: unknown) {
   if (err instanceof ValidationError) {
     res.status(StatusCodes.BAD_REQUEST).json({
@@ -117,4 +136,5 @@ export default {
   createTaskHandler,
   updateTaskHandler,
   deleteTaskHandler,
+  reAssignTask,
 };
