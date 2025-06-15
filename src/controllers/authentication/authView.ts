@@ -48,4 +48,15 @@ const signin = async (req: Request, res: Response) => {
   }
 };
 
-export default { createUser, signin };
+const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+  const users = await authenticationController.getAllUsers();
+  if (!users) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      message: "Failed to retrieve users",
+    });
+  } else {
+    res.status(StatusCodes.OK).send(users);
+  }
+};
+
+export default { createUser, signin, getAllUsers };
