@@ -6,7 +6,7 @@ const config = require("../../config/auth.config");
 const User = db.user;
 const Role = db.role;
 
-const Op = db.Sequelize.Op;
+const { Op } = db.Sequelize;
 
 export const createUser = async (userData: {
   username: string;
@@ -80,4 +80,24 @@ const signin = async (username: string, password: string) => {
   };
 };
 
-export default { createUser, signin };
+const getAllUsers = async () => {
+  const users = await User.findAll({
+    include: [
+      {
+        model: Role,
+        as: "roles",
+        attributes: ["id", "name"],
+      },
+    ],
+  });
+
+  return users.map((user: any) => ({
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    roles: user.roles.map((role: any) => role.name),
+  }));
+};
+
+export default { createUser, signin, getAllUsers };

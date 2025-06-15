@@ -23,14 +23,18 @@ export const getUserById = async (id: number) => {
 
 export const checkUserRole = async (userId: number, roleName: string) => {
   const user = await getUserById(userId);
-  if (!user) return false;
+  if (!user) {
+    return false;
+  }
   const roles = await user.getRoles();
   return roles.some((role: any) => role.name === roleName);
 };
 
 export const checkUserRoles = async (userId: number, roleNames: string[]) => {
   const user = await getUserById(userId);
-  if (!user) return false;
+  if (!user) {
+    return false;
+  }
   const roles = await user.getRoles();
   return roles.some((role: any) => roleNames.includes(role.name));
 };
@@ -61,9 +65,13 @@ const verifyToken = async (
   });
 };
 
-const isAdmin = async (req: any, res: Response, next: () => void) => {
+const isAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const hasRole = await checkUserRole(req.userId, "admin");
+    const hasRole = await checkUserRole(req.userId as number, "Admin");
     if (hasRole) {
       return next();
     }
@@ -79,7 +87,7 @@ const isAdmin = async (req: any, res: Response, next: () => void) => {
 
 const isModerator = async (req: any, res: Response, next: () => void) => {
   try {
-    const hasRole = await checkUserRole(req.userId, "moderator");
+    const hasRole = await checkUserRole(req.userId, "Moderator");
     if (hasRole) {
       return next();
     }
@@ -99,7 +107,7 @@ const isModeratorOrAdmin = async (
   next: () => void
 ) => {
   try {
-    const hasRole = await checkUserRoles(req.userId, ["moderator", "admin"]);
+    const hasRole = await checkUserRoles(req.userId, ["Moderator", "Admin"]);
     if (hasRole) {
       return next();
     }
