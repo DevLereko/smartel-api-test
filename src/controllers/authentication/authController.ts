@@ -6,7 +6,7 @@ const config = require("../../config/auth.config");
 const User = db.user;
 const Role = db.role;
 
-const Op = db.Sequelize.Op;
+const { Op } = db.Sequelize;
 
 export const createUser = async (userData: {
   username: string;
