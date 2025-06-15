@@ -45,9 +45,9 @@ db.initializeRoles = async () => {
   if (count === 0) {
     console.log("Initializing roles...");
     await db.role.bulkCreate([
-      { id: 1, name: "user", description: "Basic user" },
-      { id: 2, name: "admin", description: "Administrator" },
-      { id: 3, name: "moderator", description: "Moderator user" },
+      { id: 1, name: "User", description: "Basic user" },
+      { id: 2, name: "Admin", description: "Administrator" },
+      { id: 3, name: "Moderator", description: "Moderator user" },
     ]);
     console.log("Default roles have been added.");
   } else {
