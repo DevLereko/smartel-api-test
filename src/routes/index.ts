@@ -21,6 +21,12 @@ router.post("/tasks", [authJwt.verifyToken], taskView.createTaskHandler);
 router.put("/tasks/:id", [authJwt.verifyToken], taskView.updateTaskHandler);
 router.delete("/tasks/:id", [authJwt.verifyToken], taskView.deleteTaskHandler);
 
+router.post(
+  "/tasks/:id/reassign",
+  [authJwt.verifyToken, authJwt.isAdmin],
+  taskView.reAssignTask
+);
+
 module.exports = router;
 
 export = router;
