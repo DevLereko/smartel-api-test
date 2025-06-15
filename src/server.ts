@@ -47,7 +47,9 @@ router.use((res: Response) => {
 });
 
 /** Server */
-db.sequelize.sync().then(() => {
+db.sequelize.sync().then(async () => {
+  await db.initializeRoles(); // Default role seeding
+
   const httpServer = http.createServer(router);
   const PORT: any = process.env.PORT ?? 4000;
   httpServer.listen(PORT, () =>

@@ -39,4 +39,20 @@ db.user.hasMany(db.task, {
 
 db.ROLES = ["user", "admin", "moderator"];
 
+/** Default Roles Initialization */
+db.initializeRoles = async () => {
+  const count = await db.role.count();
+  if (count === 0) {
+    console.log("Initializing roles...");
+    await db.role.bulkCreate([
+      { id: 1, name: "user", description: "Basic user" },
+      { id: 2, name: "admin", description: "Administrator" },
+      { id: 3, name: "moderator", description: "Moderator user" },
+    ]);
+    console.log("Default roles have been added.");
+  } else {
+    console.log("Roles already initialized. Skipping seeding.");
+  }
+};
+
 module.exports = db;
