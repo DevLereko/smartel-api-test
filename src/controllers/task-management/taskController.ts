@@ -10,8 +10,11 @@ interface TaskData {
   end_date?: Date;
 }
 
-export const getAllTasks = async () => {
-  return await Task.findAll();
+export const getAllTasks = async (limit: number = 2, offset: number = 0) => {
+  return await Task.findAll({
+    limit,
+    offset,
+  });
 };
 
 export const getTaskById = async (id: number) => {
