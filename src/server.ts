@@ -1,6 +1,7 @@
 import http from "http";
-import express, { Express, NextFunction } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import morgan from "morgan";
+import routes from "./routes";
 import { StatusCodes } from "http-status-codes";
 const cors = require("cors");
 
@@ -32,6 +33,9 @@ router.use((req: any, res: any, next: NextFunction) => {
   }
   next();
 });
+
+/** Routes */
+router.use("/", routes);
 
 /** Error handling */
 router.use((req: any, res: any) => {
