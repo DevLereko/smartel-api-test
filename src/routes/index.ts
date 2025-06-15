@@ -13,6 +13,8 @@ router.post(
   authController.createUser
 );
 
+router.get("/auth/users", [authJwt.verifyToken], authController.getAllUsers);
+
 router.get("/tasks", [authJwt.verifyToken], taskView.getAllTasksHandler);
 router.get("/tasks/:id", [authJwt.verifyToken], taskView.getTaskHandler);
 router.post("/tasks", [authJwt.verifyToken], taskView.createTaskHandler);
