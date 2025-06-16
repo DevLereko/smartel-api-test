@@ -75,7 +75,7 @@ The API will be accessible at: [http://localhost:4000](http://localhost:4000)
   Authenticate a user and return a JWT token on success.
 
 * `POST /auth/signup`
-  Register a new user. Includes validations for duplicate usernames/emails and role existence.
+  Register a new user. Includes validations for duplicate usernames/emails/phone numbers and role existence.
 
 * `GET /auth/users`
   Retrieve a list of all registered users (requires a valid JWT token).
