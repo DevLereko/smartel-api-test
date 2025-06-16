@@ -10,6 +10,7 @@ A RESTful Task Management API with role-based access control, JWT authentication
 - RESTful endpoints with full CRUD functionality
 - Dockerized using Docker Compose
 - Wait-for-DB startup script for seamless container boot
+- Local development support with `npm run dev`
 
 ## Tech Stack
 - Node.js (TypeScript)
@@ -26,13 +27,13 @@ A RESTful Task Management API with role-based access control, JWT authentication
 Before running the project locally, ensure you have the following installed:
 
 - [Node.js](https://nodejs.org/) (v16+ recommended)
-- [Docker](https://www.docker.com/)
+- [Docker](https://www.docker.com/) (only if using containerized approach)
 - [Docker Compose](https://docs.docker.com/compose/)
 - [Postman](https://www.postman.com/) *(optional, for API testing)*
 
 ---
 
-## Local Setup Instructions
+## Local Setup Instructions (Without Docker)
 
 1. **Clone the Repository**
 
@@ -49,21 +50,103 @@ npm install
 
 3. **Configure Environment Variables**
 
-Copy the example `.env` file and fill in your DB and JWT credentials:
+Copy the example `.env` file and fill in your database and JWT credentials:
 
 ```bash
 cp .env.example .env
 ```
 
-4. **Start the Application**
+`.env` example content:
 
-Use Docker Compose to build and start the API:
+```env
+# DB connection details
+HOST=localhost
+DB_NAME=taskdb
+DB_DIALECT=mysql
+DB_USER=root
+DB_PASSWORD=password
+DB_HOST=localhost
+DB_PORT=3306
+
+# secret key for JWT
+SECRET_KEY=your_secret_key
+
+# MySQL container init settings (if using Docker)
+MYSQL_ROOT_PASSWORD=password
+MYSQL_DATABASE=taskdb
+```
+
+4. **Start Local Server**
+
+```bash
+npm run dev
+```
+
+> The app uses `ts-node-dev` for live-reloading in development mode. Ensure your MySQL server is running and the database exists before starting.
+
+---
+
+## Running With Docker
+
+1. **Start the Application**
 
 ```bash
 docker-compose up --build
 ```
 
-The API will be accessible at: [http://localhost:4000](http://localhost:4000)
+> Sequelize will auto-create tables and seed default roles on first run.
+
+---
+
+## Sequelize Auto-Sync and Initial Seeding
+
+Upon starting the app, Sequelize:
+
+* **Automatically creates all necessary tables** if they do not exist.
+* **Seeds default roles** (`User`, `Admin`, `Moderator`) into the `roles` table via `initializeRoles()` function.
+
+You will see this in the console:
+
+```
+Initializing roles...
+Default roles have been added.
+```
+
+---
+
+## Database Structure & Relationships
+
+The following tables and relationships are defined:
+
+### Tables
+
+* `users`: Stores user details like name, email, password, etc.
+* `roles`: Stores role types (User, Admin, Moderator).
+* `user_roles`: Join table for the many-to-many relationship between users and roles.
+* `tasks`: Stores tasks created/assigned to users.
+
+### Relationships
+
+* **User ↔ Roles**:
+  Many-to-Many via `user_roles`
+
+* **User ↔ Tasks**:
+  One-to-Many: A user can have many tasks.
+
+* **Task → User**:
+  Each task has one owner (foreign key: `userId`)
+
+> Sequelize Associations:
+
+```js
+// User-Role Many-to-Many
+role.belongsToMany(user, { through: "user_roles" });
+user.belongsToMany(role, { through: "user_roles" });
+
+// User-Task One-to-Many
+task.belongsTo(user, { foreignKey: "userId", as: "user" });
+user.hasMany(task, { foreignKey: "userId", as: "tasks" });
+```
 
 ---
 
@@ -72,43 +155,43 @@ The API will be accessible at: [http://localhost:4000](http://localhost:4000)
 ### Authentication
 
 * `POST /auth/login`
-  Authenticate a user and return a JWT token on success.
+  Authenticate a user and return a JWT token.
 
 * `POST /auth/signup`
-  Register a new user. Includes validations for duplicate usernames/emails/phone numbers and role existence.
+  Register a new user. Validates duplicate emails/usernames and role existence.
 
 * `GET /auth/users`
-  Retrieve a list of all registered users (requires a valid JWT token).
+  Retrieve all users. Requires JWT token.
 
 ---
 
 ### Task Management
 
 * `GET /tasks`
-  Retrieve all tasks assigned to or created by the user (requires authentication).
+  Retrieve all tasks for the authenticated user.
 
 * `GET /tasks/:id`
-  Fetch detailed information about a specific task by its ID.
+  Retrieve a single task by ID.
 
 * `POST /tasks`
-  Create a new task. Requires a valid JWT token.
+  Create a new task (authenticated user).
 
 * `PUT /tasks/:id`
-  Update an existing task by ID. Requires a valid JWT token.
+  Update a task by ID.
 
 * `DELETE /tasks/:id`
-  Delete a task by ID. Requires authentication.
+  Delete a task by ID.
 
 * `POST /tasks/:id/reassign`
-  Reassign a task to another user. **Only accessible by Admin users.**
+  Reassign a task to another user. **Admin only.**
 
 ---
 
-## API Testing
+## API Testing with Postman
 
-A **Postman collection** is provided in `.json` format within the project directory. This allows quick and easy testing of all endpoints.
+A **Postman collection** is provided in `.json` format in the project directory.
 
-> Import the collection into Postman to test login, task creation, updates, deletions, and admin-only actions like reassignment.
+> Import it into Postman to quickly test authentication, task operations, and admin-only functionality.
 
 ---
 
@@ -116,14 +199,14 @@ A **Postman collection** is provided in `.json` format within the project direct
 
 1. Launch an Ubuntu EC2 instance
 2. Install Docker and Docker Compose
-3. Clone the repository and set up the `.env` file
-4. Run the API using Docker Compose:
+3. Clone the repository and set up `.env`
+4. Run the API:
 
 ```bash
 docker-compose up --build
 ```
 
-5. Ensure port **4000** is open in your EC2 Security Group settings
+5. Open port **4000** in your EC2 Security Group to allow HTTP access.
 
 ---
 
