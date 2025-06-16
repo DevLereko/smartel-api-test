@@ -3,17 +3,16 @@ services:
     image: mysql:8.0
     container_name: smartel-mysql
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: your_password
-      MYSQL_DATABASE: db_name
+    env_file:
+      - .env
     ports:
-      - "3306:3306" # Note: MySQL default port is 3306, but you can change it to 3307 if needed
+      - "3307:3306" # Expose MySQL 3306 as 3307 on host
     volumes:
       - db_data:/var/lib/mysql
 
   app:
     build: .
-    container_name: smartel-api # This is the name of the container
+    container_name: smartel-api
     restart: always
     ports:
       - "4000:4000"
@@ -21,6 +20,8 @@ services:
       - db
     env_file:
       - .env
+    entrypoint: ["./wait-for.sh", "db", "3306", "--"]
+    command: ["node", "dist/server.js"]
 
 volumes:
   db_data:
