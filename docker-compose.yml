@@ -20,8 +20,7 @@ services:
       - db
     env_file:
       - .env
-    entrypoint: ["./wait-for.sh", "db", "3306", "--"]
-    command: ["node", "dist/server.js"]
+    command: ["/app/wait-for.sh", "db", "3306", "--", "node", "dist/server.js"]
 
 volumes:
   db_data:
