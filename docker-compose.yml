@@ -1,0 +1,27 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: smartel-mysql
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "3307:3306" # Expose MySQL 3306 as 3307 on host
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: smartel-api
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    entrypoint: ["./wait-for.sh", "db", "3306", "--"]
+    command: ["node", "dist/server.js"]
+
+volumes:
+  db_data:
