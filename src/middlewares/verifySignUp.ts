@@ -11,7 +11,7 @@ const checkDuplicateUsernameOrEmail = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { username, email } = req.body;
+    const { username, email, phoneNumber } = req.body;
 
     // Check Username
     const userByUsername = await User.findOne({
@@ -30,6 +30,17 @@ const checkDuplicateUsernameOrEmail = async (
       res
         .status(StatusCodes.BAD_REQUEST)
         .send({ message: "Failed! Email is already in use!" });
+      return;
+    }
+
+    // Check Phone Number
+    const userByPhoneNumber = await User.findOne({
+      where: { phoneNumber: phoneNumber },
+    });
+    if (userByPhoneNumber) {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .send({ message: "Failed! Phone number is already in use!" });
       return;
     }
 
