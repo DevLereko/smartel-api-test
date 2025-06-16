@@ -1,23 +1,36 @@
-# Use an official Node.js runtime as the base image
-FROM node:22-alpine
+# Stage 1: Build
+FROM node:22-alpine as builder
+WORKDIR /app
 
-# Set the working directory inside the container
-WORKDIR /src
-
-# Copy package.json and package-lock.json (or yarn.lock) first to leverage Docker caching
+# Copy and install dependencies
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application files
+# Copy source code and build
 COPY . .
-
-# Compile TypeScript to JavaScript
 RUN npm run build
 
-# Expose the application's port
+# Stage 2: Runtime
+FROM node:22-alpine
+WORKDIR /app
+
+# Copy only production dependencies
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+# Copy compiled output
+COPY --from=builder /app/dist ./dist
+
+# Add this line to copy the wait-for.sh script into the runtime image
+COPY wait-for.sh ./wait-for.sh
+
+# Make sure it's executable
+RUN chmod +x wait-for.sh
+
+# Set a non-root user for security
+USER node
+
 EXPOSE 4000
 
-# Command to start the application
-CMD ["npm", "start"]
+# Use wait-for.sh to wait for db before starting the app
+CMD ["./wait-for.sh", "db", "3306", "--", "node", "dist/server.js"]
