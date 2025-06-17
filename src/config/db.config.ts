@@ -17,7 +17,7 @@ module.exports = {
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: true,
+      rejectUnauthorized: false,
       ca: fs.readFileSync(
         path.resolve(__dirname, "../../certs/DigiCertGlobalRootG2.crt.pem")
       ),
