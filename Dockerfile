@@ -22,8 +22,10 @@ COPY --from=builder /app/dist ./dist
 COPY wait-for.sh /app/wait-for.sh
 RUN chmod +x /app/wait-for.sh
 
+# Optional: copy certs in case Docker Compose volumes aren't used
+COPY certs /app/certs
+
 # Use non-root user
 USER node
 
-# Use absolute path in CMD
 CMD ["/app/wait-for.sh", "db", "3306", "--", "node", "dist/server.js"]
