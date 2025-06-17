@@ -87,7 +87,7 @@ MYSQL_DATABASE=taskdb
 npm run dev
 ```
 
-> The app uses `ts-node-dev` for live-reloading in development mode. Ensure your MySQL server is running and the database exists before starting.
+> The app uses `nodemon` for live-reloading in development mode. Ensure your MySQL server is running and the database exists before starting.
 
 ---
 
