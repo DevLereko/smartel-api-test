@@ -200,14 +200,22 @@ A **Postman collection** is provided in `.json` format in the project directory.
 
 ---
 
-## Deployment (on AWS EC2)
+## Deployment steps (on AWS EC2), could not deploy to AWS because I do not have active AWS subscription
 
 1. Launch an Ubuntu EC2 instance
 2. Install Docker and Docker Compose
 3. Clone the repository and set up `.env`
 4. Run the API:
 
+
+## Production Deployment as I Hosted on Azure App Service 
+**Azure App Service**:  
+- Configured with Docker support  
+- CI/CD via GitHub Actions  
+- Environment variables set in Azure Portal  
+- Run the API using the provided Dockerfile and `docker-compose.yml`
 ```bash
+
 docker-compose up --build
 ```
 
