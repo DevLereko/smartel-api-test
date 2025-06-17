@@ -1,4 +1,6 @@
 require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
 
 module.exports = {
   HOST: process.env.DB_HOST,
@@ -11,5 +13,14 @@ module.exports = {
     min: 0,
     acquire: 30000,
     idle: 10000,
+  },
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: true,
+      ca: fs.readFileSync(
+        path.resolve(__dirname, "../../certs/DigiCertGlobalRootG2.crt.pem")
+      ),
+    },
   },
 };
