@@ -1,5 +1,10 @@
 # Task Management API
 
+[![Live Demo](https://img.shields.io/badge/LIVE-DEMO-8A2BE2?style=for-the-badge&logo=azure-pipelines&logoColor=white)](https://smartel-api-app.azurewebsites.net/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
+**Live API Base URL**: [https://smartel-api-app.azurewebsites.net/](https://smartel-api-app.azurewebsites.net/)
+
 ## Overview
 A RESTful Task Management API with role-based access control, JWT authentication, MySQL database, and Docker-based deployment. Built with Node.js (TypeScript) and Express.js.
 
