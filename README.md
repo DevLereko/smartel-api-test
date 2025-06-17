@@ -207,13 +207,8 @@ A **Postman collection** is provided in `.json` format in the project directory.
 3. Clone the repository and set up `.env`
 4. Run the API:
 
+NB: Ensure your MySQL database is accessible from the EC2 instance.
 
-## Production Deployment as I Hosted on Azure App Service 
-**Azure App Service**:  
-- Configured with Docker support  
-- CI/CD via GitHub Actions  
-- Environment variables set in Azure Portal  
-- Run the API using the provided Dockerfile and `docker-compose.yml`
 ```bash
 
 docker-compose up --build
@@ -222,6 +217,20 @@ docker-compose up --build
 5. Open port **4000** in your EC2 Security Group to allow HTTP access.
 
 ---
+
+
+## Production Deployment as I Hosted on Azure App Service 
+**Azure App Service**:  
+- Configured with Docker support  
+- CI/CD via GitHub Actions  
+- Environment variables set in Azure Portal  
+- MySQL database hosted on Azure Database for MySQL
+
+- Run the API using the provided Dockerfile and `docker-compose.yml`
+```bash
+
+docker-compose up --build
+```
 
 ## License
 
